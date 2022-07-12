@@ -15,11 +15,11 @@ router.post('/InsertData',async (req,res,next) => {
         let ops = req.body.OPS_CHECK;
         let qc = req.body.QC_CHECK;
         let IMG = req.body.IMG;
+        let remark = req.body.REMARK;
      
-        let query = `INSERT INTO zero_paper_less_system.report_layout_approval(ID_JOB,PROCESS_CODE,USERNAME,SKU,OPS_CHECK,QC_CHECK,IMG)
-         VALUES('${jobID}','${processCode}','${NTID}','${sku}','${ops}','${qc}','${IMG}')`
+        let query = `INSERT INTO zero_paper_less_system.report_layout_approval(ID_JOB,PROCESS_CODE,USERNAME,SKU,OPS_CHECK,QC_CHECK,IMG,REMARK)
+         VALUES('${jobID}','${processCode}','${NTID}','${sku}','${ops}','${qc}','${IMG}','${remark}')`
         const result =  await db.query(query);
-        console.log(query);
         if(result.rowCount > 0){
                   res.status(200).json({
                       code : 200,
@@ -28,7 +28,6 @@ router.post('/InsertData',async (req,res,next) => {
                   })
        }
     } catch (err) {
-        console.log(err)
         res.status(502).json({
             code : 502 ,
             mess : "Hệ thống service bị lỗi !"
@@ -42,9 +41,8 @@ router.get('/GetHistory',async (req,res,next) => {
         let processCode = req.query.PROCESS_CODE;
         let jobID = req.query.ID_JOB;
      
-        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,SKU,OPS_CHECK,QC_CHECK,IMG,CREATEDDATE FROM zero_paper_less_system.report_layout_approval WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
+        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,SKU,OPS_CHECK,QC_CHECK,IMG,REMARK,CREATEDDATE FROM zero_paper_less_system.report_layout_approval WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
         const result =  await db.query(query);
-        console.log(query)
         if(result.rowCount > 0){
                   res.status(200).json({
                       code : 200,
@@ -55,7 +53,6 @@ router.get('/GetHistory',async (req,res,next) => {
                     output : []
                 })
     } catch (err) {
-        console.log(err)
         res.status(502).json({
             code : 502 ,
             mess : "Hệ thống service bị lỗi !"

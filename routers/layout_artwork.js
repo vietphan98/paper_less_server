@@ -18,9 +18,10 @@ router.post('/InsertData',async (req,res,next) => {
         let width = req.body.WIDTH;
         let length = req.body.LENGTH;
         let IMG = req.body.IMG;
+        let position = req.body.POSITION;
      
-        let query = `INSERT INTO zero_paper_less_system.report_layout_artwork(ID_JOB,PROCESS_CODE,USERNAME,HOLE,CORNER,JAGGED,WIDTH,LENGTH,IMG)
-         VALUES('${jobID}','${processCode}','${NTID}','${hole}','${corner}','${jagged}','${width}','${length}','${IMG}')`
+        let query = `INSERT INTO zero_paper_less_system.report_layout_artwork(ID_JOB,PROCESS_CODE,USERNAME,HOLE,CORNER,JAGGED,WIDTH,LENGTH,IMG,POSITION)
+         VALUES('${jobID}','${processCode}','${NTID}','${hole}','${corner}','${jagged}','${width}','${length}','${IMG}','${position}')`
         const result =  await db.query(query);
         if(result.rowCount > 0){
                   res.status(200).json({
@@ -44,7 +45,7 @@ router.get('/GetHistory',async (req,res,next) => {
         let processCode = req.query.PROCESS_CODE;
         let jobID = req.query.ID_JOB;
      
-        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,HOLE,CORNER,JAGGED,WIDTH,LENGTH,IMG,CREATEDDATE FROM zero_paper_less_system.report_layout_artwork WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
+        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,HOLE,CORNER,JAGGED,WIDTH,LENGTH,IMG,CREATEDDATE,POSITION FROM zero_paper_less_system.report_layout_artwork WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
         const result =  await db.query(query);
         if(result.rowCount > 0){
                 res.status(200).json({

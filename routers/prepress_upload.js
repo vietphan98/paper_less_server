@@ -39,18 +39,20 @@ router.post('/InsertData',async (req,res,next) => {
 
 router.get('/GetHistory',async (req,res,next) => {
     try {
-        let processCode = req.query.PROCESS_CODE;
-        let jobID = req.query.ID_JOB;
+        let soline = req.query.SOLINE;
+        let from = req.query.FROM;
+        let to = req.query.TO;
      
-        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,SKU,OPS_CHECK,QC_CHECK,IMG,CREATEDDATE FROM zero_paper_less_system.report_layout_approval WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
+        let query = `SELECT id, uploadby, uploaddate, typedocument, url, active, namefile, soline, '' AS B FROM zero_paper_less_system.prepress_upload WHERE 1 = 1`
+        if(soline != "") query += ` AND SOLINE = '${soline}'`;
+        if(from != "" && to != "") query += ` AND uploaddate BETWEEN '${from} 00:00:00' AND '${to} 23:59:59'`;
         const result =  await db.query(query);
-        console.log(result)
-        if(result.rowCount > 0){
-                  res.status(200).json({
-                      code : 200,
-                      output : result.rows
-                  })
-       }
+
+        for(let i = 0; i < result.rows.length; i++) result.rows[i]["B"] = Buffer.from(result.rows[i].url).toString('base64');
+        res.status(200).json({
+            code : 200,
+            output : result.rows
+        })
     } catch (err) {
         console.log(err)
         res.status(502).json({
@@ -75,7 +77,6 @@ router.get('/GetData', async (req,res,next) => {
                 output : progressDB.rows
             })
     } catch (err) {
-        console.log(err)
         res.status(502).json({
             code : 502,
             mess : "Lỗi hệ thống"

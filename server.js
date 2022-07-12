@@ -6,8 +6,8 @@ app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 5656;
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: '50mb'})); // support json encoded bodies
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true })); //
+app.use(bodyParser.json({limit: '100mb'})); // support json encoded bodies
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true })); //
 
 var fs = require('fs');
 var https = require('https');

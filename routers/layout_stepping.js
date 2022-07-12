@@ -11,8 +11,12 @@ router.post('/InsertData',async (req,res,next) => {
         let lot = req.body.LOT;
         let action = req.body.ACTION;
         let NTID = req.body.NTID;
+        let GPM = req.body.GPM;
+        let lot_check = req.body.LOT_C;
+        let bsc = req.body.BSC;
      
-        let query = `INSERT INTO zero_paper_less_system.report_layout_stepping(ID_JOB,PROCESS_CODE,USERNAME,LOT,ACTION)  VALUES('${jobID}','${processCode}','${NTID}','${lot}','${action}')`
+        let query = `INSERT INTO zero_paper_less_system.report_layout_stepping(ID_JOB,PROCESS_CODE,USERNAME,LOT,ACTION,gpm,lot_check,barcode_size_color)
+         VALUES('${jobID}','${processCode}','${NTID}','${lot}','${action}','${GPM}','${lot_check}','${bsc}')`
         const result =  await db.query(query);
         console.log(query);
         if(result.rowCount > 0){
@@ -38,7 +42,7 @@ router.get('/GetHistory',async (req,res,next) => {
         let processCode = req.query.PROCESS_CODE;
         let jobID = req.query.ID_JOB;
      
-        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,LOT,ACTION,CREATEDDATE FROM zero_paper_less_system.report_layout_stepping WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
+        let query = `SELECT ID,ID_JOB,PROCESS_CODE,USERNAME,LOT,ACTION,CREATEDDATE,gpm,lot_check,barcode_size_color FROM zero_paper_less_system.report_layout_stepping WHERE ID_JOB = '${jobID}' AND PROCESS_CODE = '${processCode}'`
         const result =  await db.query(query);
         console.log(result)
         if(result.rowCount > 0){
@@ -84,7 +88,9 @@ router.get('/GetLot',async (req,res,next) => {
     let lot = req.query.LOT;
     let id_job = req.query.ID_JOB;
     try {
-        let result_url = await db.query(`SELECT url FROM zero_paper_less_system.prepress_upload WHERE soline = '${soline}' AND typedocument = 'LAYOUTSTEPPING' AND namefile LIKE '%Part${lot}%' AND active = 1 ORDER BY id desc LIMIT 1`)
+        let result_url;
+        if(lot == 0) result_url = await db.query(`SELECT url FROM zero_paper_less_system.prepress_upload WHERE soline = '${soline}' AND typedocument = 'LAYOUTSTEPPING' AND namefile NOT LIKE '%Part%' AND active = 1 ORDER BY id desc LIMIT 1`)
+        else result_url = await db.query(`SELECT url FROM zero_paper_less_system.prepress_upload WHERE soline = '${soline}' AND typedocument = 'LAYOUTSTEPPING' AND namefile LIKE '%Part${lot}%' AND active = 1 ORDER BY id desc LIMIT 1`)
         let Check_lot = await db.query(`SELECT action FROM zero_paper_less_system.report_layout_stepping WHERE ID_JOB = '${id_job}' AND lot = '${lot}' ORDER BY id DESC LIMIT 1`)
         let urlPath = "";
         let action = "Check";
